@@ -1,0 +1,26 @@
+doctype html
+html
+    head
+        title= title
+        link(href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.6/flatly/bootstrap.min.css", rel="stylesheet")
+        // link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", rel="stylesheet")
+        // link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css", rel="stylesheet")
+    body
+        script(src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
+        script(src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
+
+        script.
+            function postData(action, data, callback) {
+                $.ajax({
+                    type: "POST",
+                    data: data,
+                    url: "/api/" + action,
+                    dataType: "JSON",
+                    crossDomain: true,
+                    success: function(response) {
+                        callback(response);
+                    }
+                });
+            }
+
+    block content

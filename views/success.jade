@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    form(name="url-form", id="url-form" method="post")
+        input(type="hidden", name="urlInput", id="urlInput")
+
+    script.
+        var urlInput = document.getElementById("urlInput");
+        urlInput.value = document.URL;
+        document.getElementById("url-form").submit();
+
+    div.container
+        div#centerDiv.jumbotron.text-center
+            h1 success

@@ -1,0 +1,51 @@
+extends layout
+
+block content
+
+    script.
+        var enabled = false
+
+        function enableButton() {
+            var button = document.getElementById("enableButton")
+            if(!enabled) {
+                postData("ENABLE", "", function(response) {
+                    if(response.status == true) {
+                        enabled = true;
+                        button.className = "btn btn-danger";
+                        button.value = "Disable Sneaky Song Adder";
+                    }
+                });
+            } else {
+                postData("DISABLE", "", function(response) {
+                    if(response.status == true) {
+                        enabled = false;
+                        button.className = "btn btn-primary";
+                        button.value = "Enable Sneaky Song Adder";
+                    }
+                });
+            }
+        }
+
+    div.container
+        div.jumbotron.text-center(id="content")
+            h1= title
+            p Welcome to #{title}
+            br
+            br
+            br
+            if !isSignedInToTwitchAlerts
+                a(href="/loginTwitchAlerts" type="button" class="btn btn-primary") Sign into TwitchAlerts
+            else
+                p Signed into TwitchAlerts <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            br
+            br
+            if !isSignedInToYoutube
+                a(href="/loginYoutube" type="button" class="btn btn-primary") Sign into Youtube
+            else
+                p Signed into TwitchAlerts <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            br
+            br
+            //if isSignedInToTwitchAlerts && isSignedInToYoutube
+            if isSignedInToTwitchAlerts
+                button.btn.btn-primary(onclick="enableButton()" id="enableButton") Enable Sneaky Song Adder
+
