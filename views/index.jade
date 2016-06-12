@@ -42,10 +42,9 @@ block content
             if !isSignedInToYoutube
                 a(href="/loginYoutube" type="button" class="btn btn-primary") Sign into Youtube
             else
-                p Signed into TwitchAlerts <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                p Signed into Youtube <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
             br
             br
-            //if isSignedInToTwitchAlerts && isSignedInToYoutube
-            if isSignedInToTwitchAlerts
+            if isSignedInToTwitchAlerts && isSignedInToYoutube
                 button.btn.btn-primary(onclick="enableButton()" id="enableButton") Enable Sneaky Song Adder
 

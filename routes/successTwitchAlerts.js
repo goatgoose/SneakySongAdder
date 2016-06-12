@@ -5,7 +5,7 @@ var twitchAlertsAPI = require("../api/twitchAlertsAPI.js");
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-    res.render('success', { title: 'Success' });
+    res.render('successTwitchAlerts', { title: 'Success' });
 });
 
 router.post('/', function(req, res, next) {

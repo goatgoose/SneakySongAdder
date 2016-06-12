@@ -1,12 +1,12 @@
 var https = require("https");
 var request = require("request");
 
-var clientId = "8pIvxEwETRuQOl9DkPj5lRTKQL9Xzu6i3axLsPgf";
+var clientID = "8pIvxEwETRuQOl9DkPj5lRTKQL9Xzu6i3axLsPgf";
 var clientSecret = "7v6XeEEg9UfAp6gtoI0n4vlM7ReOjo6trYWPuYg2";
 
 var host = "http://www.twitchalerts.com/api/v1.0/";
 
-var redirectURI = "http://localhost:3000/success";
+var redirectURI = "http://localhost:3000/successTwitchAlerts";
 
 var accessCode = null;
 
@@ -21,7 +21,7 @@ function now() {
     return new Date().getTime() / 1000
 }
 
-var serverStart = now();
+var serverStart = now(); // change to enable time
 
 function setAccessCode(_accessCode) {
     accessCode = _accessCode;
@@ -37,7 +37,7 @@ function getAccessToken(callback) {
         method: "POST",
         form: {
             grant_type: "authorization_code",
-            client_id: clientId,
+            client_id: clientID,
             client_secret: clientSecret,
             redirect_uri: redirectURI,
             code: accessCode
@@ -59,7 +59,7 @@ function updateToken(callback) {
         method: "POST",
         form: {
             grant_type: "refresh_token",
-            client_id: clientId,
+            client_id: clientID,
             client_secret: clientSecret,
             redirect_uri: redirectURI,
             refresh_token: refreshToken
@@ -122,6 +122,9 @@ function getDonations(callback) {
 }
 
 module.exports = {
+    getClientID: function() {
+        return clientID;
+    },
     getRedirectURI: function() {
         return redirectURI;
     },

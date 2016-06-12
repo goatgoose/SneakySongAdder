@@ -7,8 +7,10 @@ var bodyParser = require('body-parser');
 
 var indexRoute = require('./routes/index');
 var apiRoute = require('./routes/api');
-var success = require('./routes/success');
 var loginTwitchAlertsRoute = require('./routes/loginTwitchAlerts');
+var successTwitchAlerts = require('./routes/successTwitchAlerts');
+var loginYoutube = require('./routes/loginYoutube');
+var successYoutube = require('./routes/successYoutube');
 
 var app = express();
 
@@ -26,8 +28,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRoute);
 app.use('/api', apiRoute);
-app.use('/success', success);
 app.use('/loginTwitchAlerts', loginTwitchAlertsRoute);
+app.use('/successTwitchAlerts', successTwitchAlerts);
+app.use('/loginYoutube', loginYoutube);
+app.use('/successYoutube', successYoutube);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

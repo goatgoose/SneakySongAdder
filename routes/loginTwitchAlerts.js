@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var twitchAlertsAPI = require("../api/twitchAlertsAPI.js");
 
-var clientID = "8pIvxEwETRuQOl9DkPj5lRTKQL9Xzu6i3axLsPgf";
+var clientID = twitchAlertsAPI.getClientID();
 var redirectURI = twitchAlertsAPI.getRedirectURI();
 var scope = "donations.read";
 
