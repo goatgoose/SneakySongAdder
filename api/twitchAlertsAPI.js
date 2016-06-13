@@ -89,9 +89,11 @@ function checkToken(callback) {
 
 function parseMessage(message) {
     var videoIds = [];
-    while(message.indexOf("youtube.com/watch?v=") != -1) {
+    var count = 0;
+    while(message.indexOf("youtube.com/watch?v=") != -1 && count <= 2) {
         message = message.substring(message.indexOf("youtube.com/watch?v=") + 20);
         videoIds.push(message.substring(0, 11));
+        count = count + 1;
     }
     return videoIds;
 }
