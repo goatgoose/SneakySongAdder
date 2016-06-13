@@ -26,6 +26,17 @@ block content
             }
         }
 
+        function addCustomLinkButton() {
+            var linkTextbox = document.getElementById("custom-link-textbox");
+            postData("ADD_CUSTOM_LINK", {
+                "link": linkTextbox.value
+            }, function(response) {
+                if(response.status == true) {
+                    linkTextbox.value = "";
+                }
+            });
+        }
+
     div.container
         div.jumbotron.text-center(id="content")
             h1= title
@@ -40,11 +51,17 @@ block content
             br
             br
             if !isSignedInToYoutube
-                a(href="/loginYoutube" type="button" class="btn btn-primary") Sign into Youtube
+                a(href="/loginYoutube" type="button" class="btn btn-primary") Sign into YouTube
             else
-                p Signed into Youtube <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                p Signed into YouTube <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
             br
             br
             if isSignedInToTwitchAlerts && isSignedInToYoutube
-                button.btn.btn-primary(onclick="enableButton()" id="enableButton") Enable Sneaky Song Adder
+                button.btn.btn-primary(type="button" onclick="enableButton()" id="enableButton") Enable Sneaky Song Adder
+                br
+                br
+                br
+                br
+                input.form-control(name="custom-link-textbox" id="custom-link-textbox", type="text", placeholder="Custom YouTube link")
+                button.btn.btn-success(type="button", onclick="addCustomLinkButton()") Add To Playlist
 

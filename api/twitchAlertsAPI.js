@@ -21,7 +21,7 @@ function now() {
     return new Date().getTime() / 1000
 }
 
-var serverStart = now(); // change to enable time
+var enableTime = null;
 
 function setAccessCode(_accessCode) {
     accessCode = _accessCode;
@@ -87,7 +87,16 @@ function checkToken(callback) {
     }
 }
 
-function getDonations(callback) {
+function parseMessage(message) {
+    var videoIds = [];
+    while(message.indexOf("youtube.com/watch?v=") != -1) {
+        message = message.substring(message.indexOf("youtube.com/watch?v=") + 20);
+        videoIds.push(message.substring(0, 11));
+    }
+    return videoIds;
+}
+
+function getNewDonations(callback) {
     checkToken(function() {
         request({
             uri: host + "donations",
@@ -101,7 +110,7 @@ function getDonations(callback) {
             var toSend = [];
             for(var i = 0; i < bodyObj.data.length; i++) {
                 var donation = bodyObj.data[i];
-                if(donation.created_at > serverStart) {
+                if(donation.created_at > enableTime) {
                     var isNew = true;
                     for(var z = 0; z < oldDonations.length; z++) {
                         var oldDonation = oldDonations[z];
@@ -111,6 +120,7 @@ function getDonations(callback) {
                     }
 
                     if(isNew) {
+                        donation.videoIds = parseMessage(donation.message);
                         toSend.push(donation);
                         oldDonations.push(donation);
                     }
@@ -138,10 +148,10 @@ module.exports = {
     setAccessCode: function(_accessCode) {
         setAccessCode(_accessCode);
     },
-    resetAccessCode: function() {
-        resetAccessCode();
+    getNewDonations: function(callback) {
+        getNewDonations(callback);
     },
-    getDonations: function(callback) {
-        getDonations(callback);
+    updateEnableTime: function() {
+        enableTime = now();
     }
 };

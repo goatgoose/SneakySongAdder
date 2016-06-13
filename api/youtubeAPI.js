@@ -21,6 +21,16 @@ function now() {
     return new Date().getTime() / 1000
 }
 
+function parseLink(link) {
+    // https://www.youtube.com/watch?v=O4zxgJXbZX8&t=1427s
+    if(link.indexOf("&") != -1) {
+        return link.substring(link.indexOf("youtube.com/watch?v=") + 20, link.indexOf("&"));
+    } else {
+        return link.substring(link.indexOf("youtube.com/watch?v=") + 20);
+    }
+
+}
+
 function getAccessToken(callback) {
     request({
         uri: host + "token",
@@ -122,10 +132,6 @@ function createPlaylist(playlistTitle, callback) {
         },
         json: true
     }, function(error, response, body) {
-        console.log(error);
-        console.log(JSON.stringify(body));
-        console.log(response);
-
         callback(body);
     });
 }
@@ -147,14 +153,72 @@ function handleCurrentPlaylist(callback) {
             getPlaylist(today, function(_playlist) {
                 if(_playlist != null) {
                     playlist = _playlist;
+                    callback();
                 } else {
                     createPlaylist(today, function(_playlist) {
                         playlist = _playlist;
+                        callback();
                     });
                 }
             });
         });
     }
+}
+
+function getVideo(id, callback) {
+    request({
+        uri: "https://www.googleapis.com/youtube/v3/videos",
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + accessToken
+        },
+        qs: {
+            part: "id",
+            id: id,
+            json: true
+        }
+    }, function(error, response, body) {
+        var bodyObj = JSON.parse(body);
+        if(bodyObj.items.length > 0) {
+            callback(bodyObj.items[0]);
+        } else {
+            callback(null);
+        }
+    });
+}
+
+function addVideo(id, callback) {
+    handleCurrentPlaylist(function() {
+        getVideo(id, function(video) {
+            if(video != null) {
+                request({
+                    uri: "https://www.googleapis.com/youtube/v3/playlistItems",
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + accessToken
+                    },
+                    qs: {
+                        "part": "snippet"
+                    },
+                    body: {
+                        "snippet": {
+                            "playlistId": playlist.id,
+                            "resourceId": {
+                                "kind": "youtube#video",
+                                "videoId": video.id
+                            }
+                        }
+                    },
+                    json: true
+                }, function(error, response, body) {
+                    console.log(body.snippet.title);
+                    callback(body);
+                });
+            } else {
+                callback(null);
+            }
+        });
+    });
 }
 
 module.exports = {
@@ -174,9 +238,13 @@ module.exports = {
             return true;
         }
     },
-    addSong: function() {
-        handleCurrentPlaylist(function() {
-
-        });
+    addVideo: function(videoId, callback) {
+        addVideo(videoId, callback);
+    },
+    resetPlaylist: function() {
+        playlist = null;
+    },
+    parseLink: function(link) {
+        return parseLink(link);
     }
 };
