@@ -17,6 +17,8 @@ var createdAt = null;
 
 var playlist = null; // delete on disable
 
+var onlyAllowMusic = false;
+
 function now() {
     return new Date().getTime() / 1000
 }
@@ -173,7 +175,7 @@ function getVideo(id, callback) {
             "Authorization": "Bearer " + accessToken
         },
         qs: {
-            part: "id",
+            part: "id,snippet",
             id: id,
             json: true
         }
@@ -187,32 +189,64 @@ function getVideo(id, callback) {
     });
 }
 
+function isMusic(id, callback) {
+    request({
+        uri: "https://www.googleapis.com/youtube/v3/videoCategories",
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + accessToken
+        },
+        qs: {
+            part: "snippet",
+            id: id,
+            json: true
+        }
+    }, function(error, response, body) {
+        var bodyObj = JSON.parse(body);
+        if(bodyObj.items[0]) {
+            if(bodyObj.items[0].snippet.title == "Music") {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        } else {
+            callback(false);
+        }
+    });
+}
+
 function addVideo(id, callback) {
     handleCurrentPlaylist(function() {
         getVideo(id, function(video) {
             if(video != null) {
-                request({
-                    uri: "https://www.googleapis.com/youtube/v3/playlistItems",
-                    method: "POST",
-                    headers: {
-                        "Authorization": "Bearer " + accessToken
-                    },
-                    qs: {
-                        "part": "snippet"
-                    },
-                    body: {
-                        "snippet": {
-                            "playlistId": playlist.id,
-                            "resourceId": {
-                                "kind": "youtube#video",
-                                "videoId": video.id
-                            }
-                        }
-                    },
-                    json: true
-                }, function(error, response, body) {
-                    console.log(body.snippet.title);
-                    callback(body);
+                isMusic(video.snippet.categoryId, function(isMusic) {
+                    if((onlyAllowMusic && isMusic) || !onlyAllowMusic) {
+                        request({
+                            uri: "https://www.googleapis.com/youtube/v3/playlistItems",
+                            method: "POST",
+                            headers: {
+                                "Authorization": "Bearer " + accessToken
+                            },
+                            qs: {
+                                "part": "snippet"
+                            },
+                            body: {
+                                "snippet": {
+                                    "playlistId": playlist.id,
+                                    "resourceId": {
+                                        "kind": "youtube#video",
+                                        "videoId": video.id
+                                    }
+                                }
+                            },
+                            json: true
+                        }, function(error, response, body) {
+                            console.log(body.snippet.title);
+                            callback(body);
+                        });
+                    } else {
+                        callback(null);
+                    }
                 });
             } else {
                 callback(null);
@@ -246,5 +280,8 @@ module.exports = {
     },
     parseLink: function(link) {
         return parseLink(link);
+    },
+    setAllowMusic: function(_onlyAllowMusic) {
+        onlyAllowMusic = _onlyAllowMusic;
     }
 };

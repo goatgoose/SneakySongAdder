@@ -5,6 +5,8 @@ block content
     script.
         var enabled = false
 
+        var allowOnlyMusic = false
+
         function enableButton() {
             var button = document.getElementById("enableButton")
             if(!enabled) {
@@ -37,6 +39,15 @@ block content
             });
         }
 
+        function onlyMusicCheckbox() {
+            var checkbox = document.getElementById("onlyMusicCheckbox")
+            if(checkbox.checked) {
+                postData("ENABLE_ONLY_MUSIC", "", function() {});
+            } else {
+                postData("DISABLE_ONLY_MUSIC", "", function() {});
+            }
+        }
+
     div.container
         div.jumbotron.text-center(id="content")
             h1= title
@@ -59,6 +70,9 @@ block content
             if isSignedInToTwitchAlerts && isSignedInToYoutube
                 button.btn.btn-primary(type="button" onclick="enableButton()" id="enableButton") Enable Sneaky Song Adder
                 br
+                br
+                p Only add videos to playlist categorized as music &nbsp
+                    input(type="checkbox" onclick="onlyMusicCheckbox()" id="onlyMusicCheckbox")
                 br
                 br
                 br

@@ -47,6 +47,13 @@ router.post('/:action', function(req, res, next) {
         youtubeAPI.addVideo(youtubeAPI.parseLink(data.link), function(video) {
             res.send({"status": true});
         });
+
+    } else if(action == "ENABLE_ONLY_MUSIC") {
+        youtubeAPI.setAllowMusic(true);
+
+    } else if(action == "DISABLE_ONLY_MUSIC") {
+        youtubeAPI.setAllowMusic(false);
+
     }
 });
 
