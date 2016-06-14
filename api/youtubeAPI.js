@@ -25,10 +25,9 @@ function now() {
 
 function parseLink(link) {
     // https://www.youtube.com/watch?v=O4zxgJXbZX8&t=1427s
-    if(link.indexOf("&") != -1) {
-        return link.substring(link.indexOf("youtube.com/watch?v=") + 20, link.indexOf("&"));
-    } else {
-        return link.substring(link.indexOf("youtube.com/watch?v=") + 20);
+    if(link.indexOf("/watch?v=") != -1) {
+        var id = link.substring(link.indexOf("/watch?v=") + 9, link.indexOf("/watch?v=") + 20);
+        return id;
     }
 
 }

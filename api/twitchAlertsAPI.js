@@ -90,8 +90,8 @@ function checkToken(callback) {
 function parseMessage(message) {
     var videoIds = [];
     var count = 0;
-    while(message.indexOf("youtube.com/watch?v=") != -1 && count <= 2) {
-        message = message.substring(message.indexOf("youtube.com/watch?v=") + 20);
+    while(message.indexOf("/watch?v=") != -1 && count <= 2) {
+        message = message.substring(message.indexOf("/watch?v=") + 9);
         videoIds.push(message.substring(0, 11));
         count = count + 1;
     }
